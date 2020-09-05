@@ -5,12 +5,30 @@ defmodule Condiment do
   No need to create different functions to cater to different use cases, instead you can have one single public function and add flavors conditionally, with Condiment.
   """
 
+  @opaque t(_term) :: %__MODULE__{
+            token: any(),
+            opts: list(),
+            resolvers: list(),
+            condiment_opts: list()
+          }
+  @type t :: t(term)
+
   defstruct [:token, :opts, :resolvers, :condiment_opts]
 
   defmodule NotImplementedError do
     defexception [:message]
   end
 
+  defimpl Inspect do
+    import Inspect.Algebra
+
+    def inspect(condiment, _opts) do
+      data = condiment |> Map.from_struct() |> Enum.into([])
+      concat(["#Condiment<", inspect(data), ">"])
+    end
+  end
+
+  @spec new(any, list(), list()) :: Condiment.t()
   def new(token, opts, condiment_opts \\ []) do
     %__MODULE__{
       token: token,
@@ -20,10 +38,13 @@ defmodule Condiment do
     }
   end
 
-  def add(%__MODULE__{} = beagle, key, resolver) when is_function(resolver, 2) and is_atom(key) do
-    %{beagle | resolvers: [{key, resolver} | beagle.resolvers]}
+  @spec add(Condiment.t(), atom, (any, map() -> any)) :: Condiment.t()
+  def add(%__MODULE__{} = condiment, key, resolver)
+      when is_function(resolver, 2) and is_atom(key) do
+    %{condiment | resolvers: [{key, resolver} | condiment.resolvers]}
   end
 
+  @spec run(Condiment.t()) :: any
   def run(%__MODULE__{
         token: token,
         opts: opts,
