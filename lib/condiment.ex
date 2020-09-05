@@ -27,6 +27,13 @@ defmodule Condiment do
     end
   end
 
+  @doc """
+  To use `Condiment`, you start with the `Condiment.new/2,3` interface.
+
+  The currently available options for `condiment_opts` is:
+    - `:on_unknown_fields
+      one of `:nothing`, `:error`, or `:raise` (default). This option specify what to do when user supplies a field that's not resolvable.
+  """
   @spec new(any, list(), list()) :: Condiment.t()
   def new(token, opts, condiment_opts \\ []) do
     %__MODULE__{
@@ -37,12 +44,20 @@ defmodule Condiment do
     }
   end
 
+  @doc """
+  `field` is what you allow users to query for. The resolver is how to resolve that query.
+
+  The resolver has to be 2-arity, the first argument is the the result of the previously ran resolver (the first resolver gets `token` instead).
+  """
   @spec add(Condiment.t(), atom, (any, map() -> any)) :: Condiment.t()
   def add(%__MODULE__{} = condiment, key, resolver)
       when is_function(resolver, 2) and is_atom(key) do
     %{condiment | resolvers: [{key, resolver} | condiment.resolvers]}
   end
 
+  @doc """
+  Runs all of the resolvers conditionally based on what user requested, it runs in the order that you defined (not the order the user supplied).
+  """
   @spec run(Condiment.t()) :: any
   def run(%__MODULE__{
         token: token,
