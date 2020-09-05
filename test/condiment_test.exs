@@ -60,6 +60,21 @@ defmodule CondimentTest do
       assert Condiment.run(condiment2) == nil
     end
 
+    test "should run in order of resolvers added, not user-specified" do
+      token = %{}
+      opts = [second: 2, first: 1]
+
+      condiment = create_condiment(token: token, opts: opts)
+
+      result =
+        condiment
+        |> Condiment.add(:first, fn _token, %{first: first} -> 1 end)
+        |> Condiment.add(:second, fn _oken, _opts -> 2 end)
+        |> Condiment.run()
+
+      assert result == 2
+    end
+
     test "should run resolvers for requested fields only" do
       token = %{}
       opts = [first: 1]
