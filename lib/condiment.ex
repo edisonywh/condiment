@@ -5,13 +5,12 @@ defmodule Condiment do
   No need to create different functions to cater to different use cases, instead you can have one single public function and add flavors conditionally, with Condiment.
   """
 
-  @opaque t(_term) :: %__MODULE__{
-            token: any(),
-            opts: list(),
-            resolvers: list(),
-            condiment_opts: list()
-          }
-  @type t :: t(term)
+  @type t :: %__MODULE__{
+          token: any(),
+          opts: list(),
+          resolvers: list(),
+          condiment_opts: list()
+        }
 
   defstruct [:token, :opts, :resolvers, :condiment_opts]
 
