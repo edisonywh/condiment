@@ -1,4 +1,9 @@
 # Condiment
+
+> Important: I used this in my app [Slick Inbox](http://slickinbox.com/) for awhile but I have since decided to move off it. I find that even though it's easy to see allowed query options, it's pretty difficult to reuse queries.
+
+> Right now I'm using the traditional `Enum.reduce(options, query, ...` way with a Query module for now (still a single unified API), I am still testing that out, but I might at some point switch back to non-unified API I outlined below (each function does a specific task), so just letting you know that this is not currently in used anymore, so use at your own risk. 
+
 Add flavors to your context function without the hassles.
 
 No need to create different functions to cater to different use cases, instead you can have one single public function and add flavors conditionally.
